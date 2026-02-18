@@ -3,6 +3,9 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose';
 import projectRouter from './routes/projects.route.js';
 import skillRouter from './routes/skills.route.js';
+import blogRouter from './routes/blogs.route.js'
+import experiancesRouter from './routes/experiances.route.js';
+import contactsRouter from './routes/contactMessage.route.js'
 
 dotenv.config();
 const app = express();
@@ -11,6 +14,9 @@ const app = express();
 app.use(express.json());
 app.use('/projects', projectRouter)
 app.use('/skills', skillRouter)
+app.use('/blogs', blogRouter)
+app.use('/experiances', experiancesRouter)
+app.use('/contacts', contactsRouter)
 
 
 mongoose.connect('mongodb+srv://portfolio:portfoliopassword@portfolio-dev.nfru9hr.mongodb.net/?appName=portfolio-dev')

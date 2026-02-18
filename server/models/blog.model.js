@@ -1,5 +1,4 @@
-import { Schema, model, models } from "mongoose";
-import slugify from "slugify";
+import { Schema, model } from "mongoose";
 
 const blogSchema = new Schema(
   {
@@ -53,4 +52,4 @@ blogSchema.index({ slug: 1 });
 blogSchema.index({ published: 1 });
 blogSchema.index({ tags: 1 });
 
-export const blogModel = models.BlogPost || model("BlogPost", blogSchema);
+export const blogModel = model("Blog", blogSchema);

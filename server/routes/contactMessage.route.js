@@ -1,0 +1,18 @@
+import express from 'express';
+import { createNewContact, deleteContact, getAllContacts, getContactById, updateContact } from '../controllers/contactMessage.model.controller.js';
+
+const router = express.Router();
+
+
+router.route('/')
+    .get(getAllContacts)
+    .post(createNewContact)
+
+
+router.route('/:id')
+    .get(getContactById)
+    .put(updateContact)
+    .delete(deleteContact)
+
+
+export default router;

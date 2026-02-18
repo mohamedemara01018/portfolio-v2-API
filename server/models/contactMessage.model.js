@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const contactSchema = new Schema(
   {
@@ -32,14 +32,12 @@ const contactSchema = new Schema(
 
     isRead: {
       type: Boolean,
-      default: false, // افتراضي لم يُقرأ بعد
+      default: false,
     },
   },
-  { timestamps: true } // createdAt + updatedAt تلقائي
+  { timestamps: true } 
 );
 
-// 🔥 Index على email لو عايز تبحث بسهولة
 contactSchema.index({ email: 1 });
 
-export const contactModel =
-  models.ContactMessage || model("ContactMessage", contactSchema);
+export const contactModel = model("ContactMessage", contactSchema);

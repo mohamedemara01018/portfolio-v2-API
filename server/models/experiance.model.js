@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const experienceSchema = new Schema(
     {
@@ -13,7 +13,6 @@ const experienceSchema = new Schema(
         role: {
             type: String,
             required: [true, "Role is required"],
-            enum: ['frontend', 'backend', 'fullstack'],
             trim: true,
             minlength: 2,
             maxlength: 100,
@@ -51,5 +50,4 @@ const experienceSchema = new Schema(
 // 🔥 index useful for sorting timeline
 experienceSchema.index({ startDate: -1 });
 
-export const experienceModel =
-    models.Experience || model("Experience", experienceSchema);
+export const experienceModel = model("Experience", experienceSchema);
