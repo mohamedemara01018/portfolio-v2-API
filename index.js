@@ -5,20 +5,22 @@ import projectRouter from './routes/projects.route.js';
 import skillRouter from './routes/skills.route.js';
 import blogRouter from './routes/blogs.route.js'
 import experiancesRouter from './routes/experiances.route.js';
+import certificatesRouter from './routes/certificates.route.js'
 import contactsRouter from './routes/contactMessage.route.js'
 import ProfileInfoRouter from './routes/ProfileInfo.route.js';
-
+import cors from 'cors'
 
 
 dotenv.config();
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use('/profileinfo', ProfileInfoRouter)
 app.use('/projects', projectRouter)
 app.use('/skills', skillRouter)
 app.use('/blogs', blogRouter)
 app.use('/experiances', experiancesRouter)
+app.use('/certificates', certificatesRouter)
 app.use('/contacts', contactsRouter)
 
 

@@ -23,6 +23,12 @@ const profileInfoSchema = new Schema(
             maxlength: 1000,
         },
 
+        about: {
+            type: String,
+            required: [true, "about is required"],
+            maxlength: 1000,
+        },
+
         email: {
             type: String,
             required: true,
@@ -48,13 +54,11 @@ const profileInfoSchema = new Schema(
         resume: {
             type: String, // pdf url
         },
+        github: { type: String },
+        linkedin: { type: String },
+        leetcode: { type: String },
+        codeforces: { type: String },
 
-        socialLinks: {
-            github: { type: String },
-            linkedin: { type: String },
-            leetcode: { type: String },
-            codeforces: { type: String },
-        },
     },
     { timestamps: true }
 );
