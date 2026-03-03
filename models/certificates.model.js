@@ -27,6 +27,11 @@ const certificatesSchema = new Schema({
         required: true
     },
 
+    certificateLink: {
+        type: String,
+        required: true
+    },
+
     credentialId: {
         type: String,
         required: true
