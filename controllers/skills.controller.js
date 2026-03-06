@@ -38,35 +38,47 @@ const createNewSkill = asyncWrapper(
         res.status(201).json({ status: statusValues.SUCCESS, message: 'skill created successfully', data: { newSkill } })
     }
 )
+const updateSkill = asyncWrapper(async (req, res, next) => {
 
-const updateSkill = asyncWrapper(
-    async (req, res, next) => {
-        const { id } = req.params;
-        let updatedData = req.body;
+    const { id } = req.params;
+    const updatedData = req.body;
 
-        if (!updatedData) {
-            return res.status(404).json({ status: statusValues.FAIL, message: 'you must provid your skill' })
-        }
-
-        const existedSkill = await skillModel.findById(id);
-
-        if (req.file && req.file.buffer) {
-            const result = await replaceToCloudinary(req.file.buffer, existedSkill.icon)
-            updatedData = { ...updatedData, icon: result.secure_url }
-        }
-
-
-        const updatedSkill = await skillModel.findByIdAndUpdate(
-            id,
-            updatedData,
-            { new: true, runValidators: true }
-        )
-        if (!updatedSkill) {
-            return res.status(404).json({ status: statusValues.FAIL, message: 'skill not found' })
-        }
-        res.status(200).json({ status: statusValues.SUCCESS, message: 'skill updated successfully' })
+    if (Object.keys(updatedData).length === 0   ) {
+        return res.status(400).json({
+            status: statusValues.FAIL,
+            message: 'you must provide data to update'
+        })
     }
-)
+
+    const existedSkill = await skillModel.findById(id);
+
+    if (!existedSkill) {
+        return res.status(404).json({
+            status: statusValues.FAIL,
+            message: 'skill not found'
+        })
+    }
+
+    let iconUrl = existedSkill.icon;
+
+    if (req.file && req.file.buffer) {
+        const result = await replaceToCloudinary(req.file.buffer, iconUrl);
+        iconUrl = result.secure_url;
+    }
+
+    const updatedSkill = await skillModel.findByIdAndUpdate(
+        id,
+        { ...updatedData, icon: iconUrl },
+        { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+        status: statusValues.SUCCESS,
+        message: 'skill updated successfully',
+        data: updatedSkill
+    });
+
+});
 
 const deleteSkill = asyncWrapper(
     async (req, res, next) => {
@@ -75,7 +87,7 @@ const deleteSkill = asyncWrapper(
         const existedSkill = await skillModel.findById(id);
 
         await deleteFromCloudinary(existedSkill.icon);
-        
+
         const daletedSkill = await skillModel.findByIdAndDelete(id);
         res.status(200).json({ status: statusValues.SUCCESS, message: 'skill deleted successfully' })
     }

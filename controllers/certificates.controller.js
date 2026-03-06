@@ -57,7 +57,7 @@ const updateCertificate = asyncWrapper(
             return res.status(404).json({ status: statusValues.FAIL, message: 'blog not found' })
         }
 
-        let coverImageUrl = certificateModel.coverImage;
+        let coverImageUrl = existedCertificate.coverImage;
         if (req.file && req.file.buffer) {
             const result = await replaceToCloudinary(req.file.buffer, coverImageUrl);
             coverImageUrl = result.secure_url;
