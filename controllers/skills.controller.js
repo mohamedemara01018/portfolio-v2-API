@@ -1,6 +1,9 @@
 import { skillModel } from "../models/skills.model.js";
 import asyncWrapper from "../middleware/asyncWrapper.js";
 import statusValues from "../utils/statusValues.js";
+import replaceToCloudinary from "../utils/replaceToCloudinary.js";
+import uploadToCloudinary from "../utils/uploadToCloudinary.js";
+import { FolderPathOfCloudinary } from "../utils/constants.js";
 
 
 const getAllSkills = asyncWrapper(
@@ -21,10 +24,16 @@ const getSkillById = asyncWrapper(
 const createNewSkill = asyncWrapper(
     async (req, res, next) => {
         const data = req.body;
+
         if (!data) {
             return res.status(404).json({ status: statusValues.FAIL, message: 'you must provid your skill' })
         }
-        const newSkill = await skillModel.create(data);
+
+        // upload image to cloudinary
+        const fileName = `image-${Date.now()}`
+        const result = await uploadToCloudinary(req.file.buffer, FolderPathOfCloudinary, fileName);
+
+        const newSkill = await skillModel.create({ ...data, icon: result.secure_url });
         res.status(201).json({ status: statusValues.SUCCESS, message: 'skill created successfully', data: { newSkill } })
     }
 )
@@ -32,11 +41,20 @@ const createNewSkill = asyncWrapper(
 const updateSkill = asyncWrapper(
     async (req, res, next) => {
         const { id } = req.params;
-        const updatedData = req.body;
+        let updatedData = req.body;
 
         if (!updatedData) {
             return res.status(404).json({ status: statusValues.FAIL, message: 'you must provid your skill' })
         }
+
+        const existedSkill = await skillModel.findById(id);
+
+        if (req.file && req.file.buffer) {
+            const result = await replaceToCloudinary(req.file.buffer, existedSkill.icon)
+            updatedData = { ...updatedData, icon: result.secure_url }
+        }
+
+
         const updatedSkill = await skillModel.findByIdAndUpdate(
             id,
             updatedData,
