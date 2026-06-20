@@ -43,7 +43,7 @@ const updateSkill = asyncWrapper(async (req, res, next) => {
     const { id } = req.params;
     const updatedData = req.body;
 
-    if (Object.keys(updatedData).length === 0   ) {
+    if (Object.keys(updatedData).length === 0) {
         return res.status(400).json({
             status: statusValues.FAIL,
             message: 'you must provide data to update'
@@ -86,7 +86,7 @@ const deleteSkill = asyncWrapper(
 
         const existedSkill = await skillModel.findById(id);
 
-        await deleteFromCloudinary(existedSkill.icon);
+        await deleteFromCloudinary(existedSkill.icon, FolderPathOfCloudinary);
 
         const daletedSkill = await skillModel.findByIdAndDelete(id);
         res.status(200).json({ status: statusValues.SUCCESS, message: 'skill deleted successfully' })

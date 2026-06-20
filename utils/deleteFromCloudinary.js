@@ -1,10 +1,10 @@
 import cloudinary from "../config/cloudinary.js"
 import { getPublicIdFromUrl } from "./getPublicIdFromUrl.js"
 
-export const deleteFromCloudinary = async (url) => {
+export const deleteFromCloudinary = async (url, folderPath) => {
     if (!url) throw new Error("Image URL is required");
 
-    const public_id = getPublicIdFromUrl(url);
+    const public_id = getPublicIdFromUrl(url, folderPath);
     console.log(public_id)
 
     try {
@@ -13,7 +13,6 @@ export const deleteFromCloudinary = async (url) => {
         if (result.result !== "ok") {
             throw new Error("Failed to delete image from Cloudinary");
         }
-
 
         return result;
     } catch (error) {

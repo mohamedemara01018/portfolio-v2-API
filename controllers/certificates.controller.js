@@ -91,7 +91,7 @@ const deleteCertificate = asyncWrapper(
 
         console.log(existedCertificate);
 
-        await deleteFromCloudinary(existedCertificate.coverImage);
+        await deleteFromCloudinary(existedCertificate.coverImage, FolderPathOfCloudinary);
 
         const deletedCertificate = await certificateModel.findByIdAndDelete(id);
 

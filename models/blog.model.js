@@ -17,11 +17,6 @@ const blogSchema = new Schema(
       type: String,
     },
 
-    coverImage: {
-      type: String,
-      required: true,
-    },
-
     tags: [
       {
         type: String,

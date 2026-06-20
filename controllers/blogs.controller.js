@@ -4,7 +4,6 @@ import statusValues from "../utils/statusValues.js";
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 import { FolderPathOfCloudinary } from "../utils/constants.js";
 import replaceToCloudinary from "../utils/replaceToCloudinary.js";
-import { deleteFromCloudinary } from "../utils/deleteFromCloudinary.js";
 
 
 
@@ -30,51 +29,41 @@ const createNewBlog = asyncWrapper(
             return res.status(404).json({ status: statusValues.FAIL, message: 'you must provide data' })
         }
 
-        // upload image to cloudinary
-        const fileName = `image-${Date.now()}`
-        const result = await uploadToCloudinary(req.file.buffer, FolderPathOfCloudinary, fileName);
-
-        const newBlog = await blogModel.create({ ...data, coverImage: result.secure_url });
+        const newBlog = await blogModel.create({ ...data });
         res.status(201).json({ status: statusValues.SUCCESS, message: 'blog added successfully', data: { newBlog } })
     }
 )
 
-const updateBlog = asyncWrapper(
-    async (req, res, next) => {
+const updateBlog = asyncWrapper(async (req, res, next) => {
+    const { id } = req.params;
+    const updatedData = req.body;
 
-        const { id } = req.params;
-        const updatedData = req.body;
-
-        if (!updatedData) {
-            return res.status(404).json({ status: statusValues.FAIL, message: 'you must provide data' })
-        }
-
-        const existedBlog = await blogModel.findById(id);
-
-        if (!existedBlog) {
-            return res.status(404).json({ status: statusValues.FAIL, message: 'blog not found' })
-        }
-
-        let coverImageUrl = existedBlog.coverImage;
-        if (req.file && req.file.buffer) {
-            const result = await replaceToCloudinary(req.file.buffer, coverImageUrl);
-            coverImageUrl = result.secure_url;
-        }
-
-        const updatedBlog = await blogModel.findByIdAndUpdate(
-            id,
-            { ...updatedData, coverImage: coverImageUrl },
-            { new: true, runValidators: true }
-        )
-
-        if (!updatedBlog) {
-            return res.status(404)
-                .json({ status: statusValues.FAIL, message: 'blog not found' })
-        }
-
-        res.status(201).json({ status: statusValues.SUCCESS, message: 'blog updated successfully' })
+    if (!updatedData || Object.keys(updatedData).length === 0) {
+        return res.status(400).json({
+            status: statusValues.FAIL,
+            message: "you must provide data",
+        });
     }
-)
+
+    const updatedBlog = await blogModel.findByIdAndUpdate(
+        id,
+        { ...updatedData },
+        { new: true, runValidators: true }
+    );
+
+    if (!updatedBlog) {
+        return res.status(404).json({
+            status: statusValues.FAIL,
+            message: "blog not found",
+        });
+    }
+
+    return res.status(200).json({
+        status: statusValues.SUCCESS,
+        message: "blog updated successfully",
+        data: updatedBlog,
+    });
+});
 
 const deleteBlog = asyncWrapper(
     async (req, res, next) => {
@@ -86,8 +75,6 @@ const deleteBlog = asyncWrapper(
             return res.status(404).json({ status: statusValues.FAIL, message: 'blog not found' })
         }
 
-        await deleteFromCloudinary(existedBlog.coverImage);
-        
         const deletedBlog = await blogModel.findByIdAndDelete(id);
 
         if (!deletedBlog) {

@@ -108,7 +108,7 @@ const deleteProfileInfo = asyncWrapper(
             return res.status(404).json({ status: statusValues.FAIL, message: 'profile info not founded' })
         }
         // delete from cloudinary
-        await deleteFromCloudinary(existedProfileInfo.avatar)
+        await deleteFromCloudinary(existedProfileInfo.avatar, FolderPathOfCloudinary)
         res.status(200).json({ status: statusValues.SUCCESS, message: 'profile info deleted successfully', deletedProfileInfo })
     }
 )

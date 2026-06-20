@@ -97,7 +97,7 @@ const deleteProject = asyncWrapper(
         }
         console.log(existedProject)
 
-        await deleteFromCloudinary(existedProject.coverImage);
+        await deleteFromCloudinary(existedProject.coverImage, FolderPathOfCloudinary);
 
         const deletedProject = await projectModel.findByIdAndDelete(id);
 
